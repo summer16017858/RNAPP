@@ -14,36 +14,22 @@ import {
   TouchableHighlight,
   Image,
   Dimensions,
-  ActivityIndicator,
-  RefreshControl
+  Alert
 } from 'react-native';
-import request from '../util/util'
-import {StackNavigator,TabNavigator,TabBarBottom} from 'react-navigation';
 import Icon from 'react-native-vector-icons/Ionicons'
-import {Header} from '../../components/index'
-import ListRow from '../listRow/index'
+import request from '../util/util'
 const width=Dimensions.get('window').width
 const height=Dimensions.get('window').height
-export default class List extends Component {
+export default class ListRow extends Component {
   constructor(props) {
     super(props);
-    var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
-      "selectedTab":"home",
-       "dataSource": ds.cloneWithRows([]),
-       "pageNum":1,
-       "item":[],
-       "total":0,
-       "isLoading":false,
-       "isRefreshing":false
+      row:this.props.row,
+      liked:this.props.row.liked
     };
-    this.selectTab= this.selectTab.bind(this)
   }
   componentDidMount(){
-    this._FetchData(this.state.pageNum)
-  }
-  _hasMore(){
-    return this.state.item.length!=this.state.total
+    // this._FetchData(this.state.pageNum)
   }
   _FetchData(page){
     console.log('fetch')
@@ -90,77 +76,72 @@ export default class List extends Component {
       })
     });
   }
-  _fetchMoreData(){
-    console.log(this,'fetch more')
-    if(!this._hasMore() || this.state.isLoading){
-      return
-    }
-    this._FetchData(this.state.pageNum++)
-  }
-  selectTab(val){
-    this.setState({ selectedTab: val })
-  }
-  _renderFooter(){
-    if(!this._hasMore() && this.state.total!==0){
-      return (
-        <View>
-          <Text style={styles.loadingText}>没有更多了</Text>
-        </View>
-      )
-    }
-    return (
-      <View>
-        <ActivityIndicator
-        animating={this.state.isLoading}
-        style={[styles.centering, {height: 80}]}
-        size="large"
-        />
-      </View>
-    )
-  }
   _like(){
-
-  }
-  renderRow(row){
-    console.log(ListRow,'ListRow')
-    return (
-      <ListRow row={row}/>
-    )
-  }
-  _onRefresh(){
-    if(!this._hasMore()||this.state.isRefreshing){
-      return
+    const row=this.state.row;
+    const liked=!this.state.liked;
+    const that=this;
+    const body={
+      id:row.id,
+      liked,
+      accessToken:'111'
     }
-    this.setState({
-      "isRefreshing":false
+    request.post('http://rapapi.org/mockjs/26578/api/like',body).then(data=>{
+      if(data.success){
+        that.setState({
+          liked
+        })
+        console.log(this.state.liked,'liked')
+      }else{
+        Alert.alert('点暂失败')
+      }
+
+    }).catch(err=>{
+      console.log(err)
     })
-    this._FetchData(0)
   }
   render() {
+    const row=this.state.row;
+    console.log(row,'row')
     return (
-      <View style={styles.container}>
-        <Header pageName= "主页"/>
-        <ListView
-          enableEmptySections={true}
-          dataSource={this.state.dataSource}
-          onEndReached={this._fetchMoreData.bind(this)}
-          onEndReachedThreshold={20}
-          renderFooter={this._renderFooter.bind(this)}
-          renderRow={(rowData) => this.renderRow(rowData)}
-          automaticallyAdjustContentInsets={false}
-          showsVerticalScrollIndicator ={false}
-          refreshControl={
-           <RefreshControl
-             refreshing={this.state.isRefreshing}
-             onRefresh={this._onRefresh.bind(this)}
-             tintColor="#eee"
-             title="拼命加载中...."
-             titleColor="#eee"
-             colors={['#ff0000', '#00ff00', '#0000ff']}
-             progressBackgroundColor="#eee"
-           />
-         }
-        />
+      <View>
+        <TouchableHighlight>
+          <View style={styles.item}>
+            <Text>{row.title}</Text>
+            <Image
+            source={{uri:row.thumb}}
+            style={styles.thumb}
+            onPress={()=>{
+              console.log('this.props.navigation.navigate')
+              this.props.navigation.navigate('Account');
+            }}
+            >
+              <Icon
+                name='ios-play'
+                size={28}
+                style={styles.play}
+              />
+            </Image>
+            <View style={styles.itemFooter}>
+              <View style={styles.handleBox}>
+                <Icon
+                  name={this.state.liked?'ios-heart':'ios-heart-outline'}
+                  size={28}
+                  style={[styles.up,this.state.liked?null:styles.down]}
+                  onPress={this._like.bind(this)}
+                />
+                <Text style={styles.handleText} onPress={this._like.bind(this)}>喜欢</Text>
+              </View>
+              <View style={styles.handleBox}>
+                <Icon
+                  name='ios-chatboxes'
+                  size={28}
+                  style={styles.up}
+                />
+                <Text style={styles.handleText}>评论</Text>
+              </View>
+            </View>
+          </View>
+        </TouchableHighlight>
       </View>
     );
   }

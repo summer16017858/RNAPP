@@ -11,11 +11,92 @@ import {
   Text,
   View
 } from 'react-native';
-
+import {StackNavigator,TabNavigator,TabBarBottom} from 'react-navigation';
 import Icon from 'react-native-vector-icons/Ionicons'
-import TabNavigator from 'react-native-tab-navigator'
 import {List,Account,Edit} from './app/index'
+import {TabBarItem} from './components/index'
+import Products from './app/list/products'
+const Tab = TabNavigator(
+  {
+    Home:{
+      screen:List,
+      navigationOptions:({navigation}) => ({
+        tabBarLabel:'首页',
+        tabBarIcon:({focused,tintColor}) => (
+          <TabBarItem
+            tintColor={tintColor}
+            focused={focused}
+            normalImage={'ios-home'}
+            selectedImage={'ios-home-outline'}
+          />
+        )
+      }),
+    },
+    Edit:{
+        screen:Edit,
+        navigationOptions:({navigation}) => ({
+        tabBarLabel:'制作',
+        tabBarIcon:({focused,tintColor}) => (
+          <TabBarItem
+           tintColor={tintColor}
+            focused={focused}
+            normalImage={'ios-recording'}
+            selectedImage={'ios-recording-outline'}
+          />
+        )
+      }),
+    },
+    Mine:{
+          screen:Account,
+          navigationOptions:({navigation}) => ({
+          tabBarLabel:'我',
+          tabBarIcon:({focused,tintColor}) => (
+            <TabBarItem
+              tintColor={tintColor}
+              focused={focused}
+              normalImage={'ios-more'}
+              selectedImage={'ios-more-outline'}
+            />
+          )
+        }),
+      },
+    },
 
+    {
+      tabBarComponent:TabBarBottom,
+      tabBarPosition:'bottom',
+      swipeEnabled:false,
+      animationEnabled:false,
+      lazy:true,
+      tabBarOptions:{
+        activeTintColor:'#06c1ae',
+        inactiveTintColor:'#979797',
+        style:{backgroundColor:'#ffffff',},
+        labelStyle: {
+              fontSize: 20, // 文字大小
+          },
+      }
+
+    }
+
+  );
+  const Navigator = StackNavigator(
+
+    {
+      Products:{screen:Products}
+    },
+
+    {
+      navigationOptions:{
+        headerBackTitle:null,
+        headerTintColor:'#333333',
+        showIcon:true,
+        swipeEnabled:false,
+        animationEnabled:false,
+      },
+
+      mode:'card',
+    });
 export default class dogApp extends Component {
   constructor(props) {
     super(props);
@@ -30,35 +111,7 @@ export default class dogApp extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <TabNavigator tabBarStyle={{ backgroundColor:'#fff' }} style={{backgroundColor: 'white'}} >
-            <TabNavigator.Item
-               title="主页"
-               titleStyle={styles.tabText}
-               selected={this.state.selectedTab === 'home'}
-               renderIcon={() => <Icon name={ 'ios-home' } size={30} color={'gray'}/>}
-               renderSelectedIcon={() => <Icon name={ 'ios-home' } size={30} color={'#4E78E7'}/>}
-               onPress={() =>  this.selectTab('home')}>
-               <List></List>
-           </TabNavigator.Item>
-           <TabNavigator.Item
-                 title="录制"
-                 titleStyle={styles.tabText}
-                 selected={this.state.selectedTab === 'recording'}
-                 renderIcon={() => <Icon name={ 'ios-recording' } size={30} color={'gray'}/>}
-                 renderSelectedIcon={() => <Icon name={ 'ios-recording' } size={30} color={'#4E78E7'}/>}
-                 onPress={() => this.selectTab('recording')}>
-                 <Edit/>
-             </TabNavigator.Item>
-           <TabNavigator.Item
-                 title="其他"
-                 titleStyle={styles.tabText}
-                 selected={this.state.selectedTab === 'other'}
-                 renderIcon={() => <Icon name={ 'ios-more' } size={30} color={'gray'}/>}
-                 renderSelectedIcon={() => <Icon name={ 'ios-more' } size={30} color={'#4E78E7'}/>}
-                 onPress={() =>  this.selectTab('other')}>
-                 <Account/>
-             </TabNavigator.Item>
-        </TabNavigator>
+        <Tab/>
       </View>
     );
   }
