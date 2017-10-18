@@ -1,0 +1,19 @@
+{
+  "name": "back-server",
+  "version": "1.0.0",
+  "description": "back server for my-app",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/summer16017858/RNAPP.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/summer16017858/RNAPP/issues"
+  },
+  "homepage": "https://github.com/summer16017858/RNAPP#readme"
+}
