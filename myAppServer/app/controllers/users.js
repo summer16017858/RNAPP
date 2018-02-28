@@ -18,7 +18,7 @@ exports.signUp = function *(next){
     user = new User({
       nickname: '初始昵称',
       verifyCode: verifyCode,
-      phoneNumber: xss(18405814607),
+      phoneNumber: xss(phoneNumber),
       accessToken: token,
       age:null,
       avator:'https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=1432929665,3497863733&fm=27&gp=0.jpg'
@@ -32,6 +32,7 @@ exports.signUp = function *(next){
     this.body={
       success:false
     }
+    console.log('err:' + err)
     return;
   }
   const msg = '您的注册验证码是：' + verifyCode

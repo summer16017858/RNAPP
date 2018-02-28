@@ -124,6 +124,9 @@ class MyApp extends Component {
   componentDidMount(){
     this.asyncAppStatus()
   }
+  componentWillMount(){
+    AsyncStorage.removeItem('entered')
+  }
   selectTab(val){
     this.setState({ selectedTab: val })
   }
@@ -171,14 +174,14 @@ class MyApp extends Component {
   }
   enterSlider(){
     console.log('enterSlider')
-    this.setState({
-      entered:true
-    })
     // this.setState({
     //   entered:true
-    // },() => {
-    //   AsyncStorage.setItem('entered','true')
     // })
+    this.setState({
+      entered:true
+    },() => {
+      AsyncStorage.setItem('entered','true')
+    })
   }
   render() {
     if(!this.state.logined){

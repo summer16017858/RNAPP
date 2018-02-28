@@ -36,9 +36,15 @@ export default class Slider extends Component {
       <Swiper style={styles.container} dot={<View style={styles.dot}></View>} activeDot={<View style={styles.activeDot}></View>} paginationStyle={styles.pagination} loop={false}>
         <View style={styles.slide}>
           <Image style={styles.image} source={require('../assets/images/slider1.jpg')}/>
+          <TouchableOpacity style={styles.skip} onPress={this.enter.bind(this)}>
+            <Text style={styles.skipText}>跳过</Text>
+          </TouchableOpacity>
         </View>
         <View style={styles.slide}>
           <Image style={styles.image} source={require('../assets/images/slider2.jpg')}/>
+          <TouchableOpacity style={styles.skip} onPress={this.enter.bind(this)}>
+            <Text style={styles.skipText}>跳过</Text>
+          </TouchableOpacity>
         </View>
         <View style={styles.slide}>
           <Image style={styles.image} source={require('../assets/images/slider3.jpg')}/>
@@ -103,6 +109,22 @@ const styles = StyleSheet.create({
     fontSize:20,
     fontWeight:'bold',
     textAlign:'center'
+  },
+  skip:{
+    justifyContent:'center',
+    alignItems:'center',
+    position:'absolute',
+    top:50,
+    right:10,
+    width:60,
+    height:20,
+    borderRadius:10,
+    borderWidth:1,
+    borderColor:'#fff',
+    backgroundColor:'transparent'
+  },
+  skipText:{
+    color:'#fff'
   }
 
 })
